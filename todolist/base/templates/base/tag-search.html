@@ -1,0 +1,78 @@
+{% extends 'base/main.html' %}
+{% block content %}
+
+
+
+
+
+<div class="container">
+
+<div class="header-bar">
+    <a href="{% url 'tasks'%}">Go Back</a>
+    <div>
+        <h1>
+            Hello {{request.user|title}}
+        </h1>
+        <h3 style="margin:0">
+            You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }}
+        </h3>
+    </div>
+    {% if request.user.is_authenticated %}
+    <a href = "{% url 'logout'%}">Logout </a>
+    {% else %}
+    <a href = "{%url 'login'%}">Login</a>    
+    {% endif %}
+</div>
+    
+<div class="menu">
+<div class="tags">
+    <a id = "add-tag"  href="{%url 'tag-create' %}">create new tag + </a>
+    {%for tag in tags %}
+    <div class="tag-title">
+        <div class="tag-title">
+            <a href = "{% url 'tag-view' tag %}">{{tag}}</a>
+        </div>
+    </div>
+    {%endfor%}
+</div>
+
+
+<div class="task-items-wrapper">
+    {%for task in tasks %}
+        {%for tag in task.tag.all %}
+            {%if tag.title == choosen_tag%}
+                <div class="task-wrapper">
+                    {% if task.complete %}
+                    <div class="task-title">
+                        <div class="task-complete-icon"></div>
+                        <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i>
+                        {%for tag in task.tag.all %}
+                        {{tag}}
+                        {%endfor%}
+                    </div>
+                    <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
+                    {% else %}
+                    <div class="task-title">
+                        <div class="task-incomplete-icon"></div>
+                        <a href="{% url 'task-update' task.id %}">{{task}}</a>
+                    <div class="task-tags">
+                        {%for tag in task.tag.all %}
+                            {{tag}}
+                        {%endfor%}
+                    </div>
+                    {%endif%}
+                </div>
+            {%endif%}
+        {%endfor%}
+    {% endfor%}
+
+    </div>
+</div>
+
+
+
+</div>
+</div>
+
+
+{% endblock content %} 
